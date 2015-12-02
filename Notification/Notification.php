@@ -16,6 +16,11 @@ class Notification implements NotificationInterface
     /**
      * @var string
      */
+    protected $id;
+
+    /**
+     * @var string
+     */
     protected $receiver;
 
     /**
@@ -33,6 +38,36 @@ class Notification implements NotificationInterface
      */
     protected $type;
 
+    /**
+     * Gets the value of id.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Sets the value of id.
+     *
+     * @param  string $id the id
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @param $id
+     */
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
 
     /**
      * @inheritdoc
@@ -105,6 +140,4 @@ class Notification implements NotificationInterface
 
         return $this;
     }
-
-
 }

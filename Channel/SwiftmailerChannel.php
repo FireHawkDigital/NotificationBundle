@@ -12,6 +12,7 @@
 namespace HadesArchitect\NotificationBundle\Channel;
 
 use HadesArchitect\NotificationBundle\Notification\NotificationInterface;
+use Throwr\CRM\Bundle\CoreBundle\Entity\NotificationAction;
 
 class SwiftmailerChannel implements NotificationChannelInterface, SenderAwareChannelInterface
 {
@@ -40,19 +41,10 @@ class SwiftmailerChannel implements NotificationChannelInterface, SenderAwareCha
     {
         $this->sender = $sender;
     }
-
     /**
      * @inheritdoc
      */
-    public function supports(NotificationInterface $notification)
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function send(NotificationInterface $notification, $event)
+    public function send(NotificationInterface $notification, $event = null)
     {
         $message = $this->mailer->createMessage()
             ->setFrom($this->sender)
@@ -63,8 +55,11 @@ class SwiftmailerChannel implements NotificationChannelInterface, SenderAwareCha
         $this->mailer->send($message);
     }
 
+    /**
+     * @param NotificationInterface $notification
+     */
     public function supports(NotificationInterface $notification)
     {
-
+        return $notification->getType() === NotificationAction::TYPE_EMAIL;
     }
 }

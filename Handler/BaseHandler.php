@@ -105,7 +105,7 @@ class BaseHandler implements HandlerInterface
 
         foreach ($this->receiver->findByEventName($eventName) as $notification) {
             $user = $notification->getCreatedBy();
-            foreach ($notification->getNotificationAction() as $notificationAction) {
+            foreach ($notification->getNotificationActions() as $notificationAction) {
                 $view = $this->templatingEngine->render(
                     $this->templateName, [
                         'event_name' => $eventName,
@@ -115,7 +115,7 @@ class BaseHandler implements HandlerInterface
                 );
 
                 try {
-                    $this->channel->send($this->getNotification($view, $notification), $event);
+                    $this->channel->send($this->getNotification($view, $notificationAction), $event);
                 } catch (\Exception $exception) {
                     throw new ChannelException('Exception was caught during notification sending', 0, $exception);
                 }
@@ -129,11 +129,12 @@ class BaseHandler implements HandlerInterface
      */
     protected function getNotification($body, NotificationAction $notificationAction)
     {
-        $notification = new Notification();
+        $notification = new Notification('notif-' . $notificationAction->getType() . '-' . $notificationAction->getId());
 
         $notification
             ->setBody($body)
-            ->setTo($notificationAction->getType());
+            ->setReceiver($notificationAction->getReciever())
+            ->setType($notificationAction->getType());
 
         return $notification;
     }

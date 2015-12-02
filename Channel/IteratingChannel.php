@@ -26,23 +26,26 @@ class IteratingChannel implements NotificationChannelInterface
      */
     public function __construct(array $channels)
     {
-        $this->channels = channels;
+        $this->channels = $channels;
     }
 
     /**
      * @inheritdoc
      */
-    public function send(NotificationInterface $notification)
+    public function send(NotificationInterface $notification, $event = null)
     {
         foreach ($this->channels as $channel) {
             if ($channel->supports($notification)) {
-                $channel->send($notification);
+                $channel->send($notification, $event);
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * @param NotificationInterface $notification
+     */
     public function supports(NotificationInterface $notification)
     {
 

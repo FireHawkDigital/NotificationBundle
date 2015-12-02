@@ -40,6 +40,11 @@ interface NotificationInterface
     /**
      * @return string
      */
+    function getId();
+
+    /**
+     * @return string
+     */
     function getReceiver();
 
     /**
