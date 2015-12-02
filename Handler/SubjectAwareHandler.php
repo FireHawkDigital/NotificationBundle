@@ -45,14 +45,12 @@ class SubjectAwareHandler extends BaseHandler implements SubjectAwareHandlerInte
     /**
      * @inheritdoc
      */
-    protected function getNotification($body)
+    protected function getNotification($to, $body)
     {
-        $notification = new Notification();
+        $notification = parent::getNotification($to, $body);
 
         $notification
-            ->setReceiver($this->receiver)
-            ->setSubject($this->translator->trans($this->subject))
-            ->setBody($body);
+            ->setSubject($this->translator->trans($this->subject));
 
         return $notification;
     }

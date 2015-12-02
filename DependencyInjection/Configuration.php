@@ -59,7 +59,6 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('subject')->defaultValue($this->subject)->end()
                             ->scalarNode('handler_class')->defaultValue($this->handlerClass)->end()
                             ->scalarNode('channel')->defaultValue('@ha_notification.channel')->end()
-                            ->variableNode('receiver')->end()
                         ->end()
                     ->end()
                 ->end()

@@ -35,6 +35,13 @@ interface NotificationInterface
     function setBody($body);
 
     /**
+     * @param integer $type
+     *
+     * @return self
+     */
+    function setType($type);
+
+    /**
      * @return string
      */
     function getReceiver();
@@ -48,4 +55,11 @@ interface NotificationInterface
      * @return string
      */
     function getBody();
+
+    /**
+     * @return string
+     */
+    function getType();
+
+
 }

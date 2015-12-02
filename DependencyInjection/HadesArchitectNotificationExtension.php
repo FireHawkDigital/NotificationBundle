@@ -70,7 +70,7 @@ class HadesArchitectNotificationExtension extends Extension
         $definition->addMethodCall('setTemplatingEngine', array($this->getReference($handlerConfig['templating'])));
         $definition->addMethodCall('setChannel', array($this->getReference($handlerConfig['channel'])));
         $definition->addMethodCall('setTemplateName', array($handlerConfig['template']));
-        $definition->addMethodCall('setReceiver', array($handlerConfig['receiver']));
+        $definition->addMethodCall('setNotificationRepository', array($this->getReference("crm_core.repository.notification")));
         $definition->addTag('kernel.event_listener', array('event' => $handlerConfig['event'], 'method' => 'onEvent'));
 
         if ($this->classImplements($class, 'HadesArchitect\NotificationBundle\Handler\TranslatorAwareHandlerInterface')) {

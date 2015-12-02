@@ -58,6 +58,10 @@ class BaseHandler implements HandlerInterface
         $this->channel = $channel;
     }
 
+    function setNotificationRepository($repo) {
+        $this->setReceiver($repo);
+    }
+
     /**
      * @inheritdoc
      */
@@ -91,18 +95,22 @@ class BaseHandler implements HandlerInterface
             throw new ChannelException('Handler is not ready, channel not set');
         }
 
-        $view = $this->templatingEngine->render(
-            $this->templateName, array(
-                'event_name' => $eventName,
-                'event'      => $event,
-                'receiver'   => $this->receiver
-            )
-        );
 
-        try {
-            $this->channel->send($this->getNotification($view));
-        } catch (\Exception $exception) {
-            throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+        foreach ($this->receiver->findByEventName($eventName) as $notification) {
+            $user = $notification->getCreatedBy();
+            $view = $this->templatingEngine->render(
+                $this->templateName, array(
+                    'event_name' => $eventName,
+                    'event' => $event,
+                    'receiver' => $user
+                )
+            );
+
+            try {
+                $this->channel->send($this->getNotification($user->getEmail(), $view));
+            } catch (\Exception $exception) {
+                throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+            }
         }
     }
 
@@ -111,12 +119,12 @@ class BaseHandler implements HandlerInterface
      *
      * @return NotificationInterface
      */
-    protected function getNotification($body)
+    protected function getNotification($to, $body)
     {
         $notification = new Notification();
 
         $notification
-            ->setReceiver($this->receiver)
+            ->setReceiver($to)
             ->setBody($body);
 
         return $notification;
