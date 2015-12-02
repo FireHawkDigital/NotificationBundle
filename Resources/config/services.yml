@@ -4,3 +4,7 @@ services:
         class: %ha_notification.channel.swiftmailer_class%
         arguments:
             - @swiftmailer.mailer
+    ha_notification.channel.iterating:
+        class: %ha_notification.channel.iterating_class%
+        arguments:
+            - [@swiftmailer.mailer]

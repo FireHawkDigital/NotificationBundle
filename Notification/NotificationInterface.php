@@ -57,9 +57,7 @@ interface NotificationInterface
     function getBody();
 
     /**
-     * @return string
+     * @return integer
      */
     function getType();
-
-
 }

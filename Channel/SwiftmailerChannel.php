@@ -54,4 +54,9 @@ class SwiftmailerChannel implements NotificationChannelInterface, SenderAwareCha
 
         $this->mailer->send($message);
     }
+
+    public function supports(NotificationInterface $notification)
+    {
+
+    }
 }

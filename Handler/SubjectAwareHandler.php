@@ -13,6 +13,7 @@ namespace HadesArchitect\NotificationBundle\Handler;
 
 use HadesArchitect\NotificationBundle\Notification\Notification;
 use Symfony\Component\Translation\TranslatorInterface;
+use Throwr\CRM\Bundle\CoreBundle\Entity\NotificationAction;
 
 class SubjectAwareHandler extends BaseHandler implements SubjectAwareHandlerInterface, TranslatorAwareHandlerInterface
 {
@@ -45,9 +46,9 @@ class SubjectAwareHandler extends BaseHandler implements SubjectAwareHandlerInte
     /**
      * @inheritdoc
      */
-    protected function getNotification($to, $body)
+    protected function getNotification($body, NotificationAction $notificationAction)
     {
-        $notification = parent::getNotification($to, $body);
+        $notification = parent::getNotification($body, $notificationAction);
 
         $notification
             ->setSubject($this->translator->trans($this->subject));

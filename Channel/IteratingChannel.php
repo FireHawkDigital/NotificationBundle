@@ -52,4 +52,9 @@ class IteratingChannel implements NotificationChannelInterface, SenderAwareChann
 
         $this->mailer->send($message);
     }
+
+    public function supports(NotificationInterface $notification)
+    {
+
+    }
 }

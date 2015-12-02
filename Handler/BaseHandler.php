@@ -19,6 +19,7 @@ use HadesArchitect\NotificationBundle\Notification\Notification;
 use HadesArchitect\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Templating\EngineInterface;
+use Throwr\CRM\Bundle\CoreBundle\Entity\NotificationAction;
 
 class BaseHandler implements HandlerInterface
 {
@@ -98,18 +99,20 @@ class BaseHandler implements HandlerInterface
 
         foreach ($this->receiver->findByEventName($eventName) as $notification) {
             $user = $notification->getCreatedBy();
-            $view = $this->templatingEngine->render(
-                $this->templateName, array(
-                    'event_name' => $eventName,
-                    'event' => $event,
-                    'receiver' => $user
-                )
-            );
+            foreach ($notification->getNotificationAction() as $notificationAction) {
+                $view = $this->templatingEngine->render(
+                    $this->templateName, array(
+                        'event_name' => $eventName,
+                        'event' => $event,
+                        'receiver' => $user
+                    )
+                );
 
-            try {
-                $this->channel->send($this->getNotification($user->getEmail(), $view));
-            } catch (\Exception $exception) {
-                throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+                try {
+                    $this->channel->send($this->getNotification($view, $notification));
+                } catch (\Exception $exception) {
+                    throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+                }
             }
         }
     }
@@ -119,13 +122,16 @@ class BaseHandler implements HandlerInterface
      *
      * @return NotificationInterface
      */
-    protected function getNotification($to, $body)
+    protected function getNotification($body, NotificationAction $notificationAction)
     {
         $notification = new Notification();
 
         $notification
-            ->setReceiver($to)
             ->setBody($body);
+
+        if ($notificationAction->getType() === NotificationAction::TYPE_EMAIL) {
+
+        }
 
         return $notification;
     }
