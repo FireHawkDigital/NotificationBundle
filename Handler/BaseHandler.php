@@ -19,6 +19,7 @@ use HadesArchitect\NotificationBundle\Notification\Notification;
 use HadesArchitect\NotificationBundle\Notification\NotificationInterface;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Templating\EngineInterface;
+use Throwr\CRM\Bundle\CoreBundle\Entity\NotificationAction;
 
 class BaseHandler implements HandlerInterface
 {
@@ -61,6 +62,9 @@ class BaseHandler implements HandlerInterface
         $this->channel = $channel;
     }
 
+    /**
+     * @param $repo
+     */
     public function setNotificationRepository($repo)
     {
         $this->setReceiver($repo);
@@ -101,18 +105,20 @@ class BaseHandler implements HandlerInterface
 
         foreach ($this->receiver->findByEventName($eventName) as $notification) {
             $user = $notification->getCreatedBy();
-            $view = $this->templatingEngine->render(
-                $this->templateName, [
-                    'event_name' => $eventName,
-                    'event'      => $event,
-                    'receiver'   => $user
-                ]
-            );
+            foreach ($notification->getNotificationAction() as $notificationAction) {
+                $view = $this->templatingEngine->render(
+                    $this->templateName, [
+                        'event_name' => $eventName,
+                        'event'      => $event,
+                        'receiver'   => $user
+                    ]
+                );
 
-            try {
-                $this->channel->send($this->getNotification($user->getEmail(), $view), $event);
-            } catch (\Exception $exception) {
-                throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+                try {
+                    $this->channel->send($this->getNotification($view, $notification), $event);
+                } catch (\Exception $exception) {
+                    throw new ChannelException('Exception was caught during notification sending', 0, $exception);
+                }
             }
         }
     }
@@ -121,13 +127,13 @@ class BaseHandler implements HandlerInterface
      * @param  string                  $body
      * @return NotificationInterface
      */
-    protected function getNotification($to, $body)
+    protected function getNotification($body, NotificationAction $notificationAction)
     {
         $notification = new Notification();
 
         $notification
-            ->setReceiver($to)
-            ->setBody($body);
+            ->setBody($body)
+            ->setTo($notificationAction->getType());
 
         return $notification;
     }

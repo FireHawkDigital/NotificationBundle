@@ -42,4 +42,9 @@ class IteratingChannel implements NotificationChannelInterface
         }
         return false;
     }
+
+    public function supports(NotificationInterface $notification)
+    {
+
+    }
 }

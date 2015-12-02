@@ -29,6 +29,12 @@ class Notification implements NotificationInterface
     protected $body;
 
     /**
+     * @var integer
+     */
+    protected $type;
+
+
+    /**
      * @inheritdoc
      */
     public function getReceiver()
@@ -81,4 +87,24 @@ class Notification implements NotificationInterface
 
         return $this;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+
 }

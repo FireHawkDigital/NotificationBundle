@@ -38,7 +38,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('default_channel')
-                    ->defaultValue('@ha_notification.channel.swiftmailer')
+                    ->defaultValue('@ha_notification.channel.iterating')
                 ->end()
                 ->arrayNode('swiftmailer_channel')
                     ->isRequired()

@@ -4,3 +4,4 @@ parameters:
     ha_notification.view.default_template:     HadesArchitectNotificationBundle:Email:default.html.twig
     ha_notification.default_subject:           Notification
     ha_notification.channel.swiftmailer_class: HadesArchitect\NotificationBundle\Channel\SwiftmailerChannel
+    ha_notification.channel.iterating_class:   HadesArchitect\NotificationBundle\Channel\IteratingChannel
