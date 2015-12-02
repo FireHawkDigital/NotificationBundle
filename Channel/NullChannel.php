@@ -18,8 +18,16 @@ class NullChannel implements NotificationChannelInterface
     /**
      * @inheritdoc
      */
-    public function send(NotificationInterface $notification)
+    public function send(NotificationInterface $notification, $event = null)
     {
         // Null channel is just null channel
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supports(NotificationInterface $notification)
+    {
+        return true;
     }
 }

@@ -14,29 +14,25 @@ namespace HadesArchitect\NotificationBundle\Notification;
 interface NotificationInterface
 {
     /**
-     * @param string $receiver
-     *
+     * @param  string $receiver
      * @return self
      */
     function setReceiver($receiver);
 
     /**
-     * @param string $subject
-     *
+     * @param  string $subject
      * @return self
      */
     function setSubject($subject);
 
     /**
-     * @param string $body
-     *
+     * @param  string $body
      * @return self
      */
     function setBody($body);
 
     /**
-     * @param integer $type
-     *
+     * @param  integer $type
      * @return self
      */
     function setType($type);
@@ -60,6 +56,4 @@ interface NotificationInterface
      * @return string
      */
     function getType();
-
-
 }

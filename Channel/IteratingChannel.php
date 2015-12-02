@@ -13,30 +13,20 @@ namespace HadesArchitect\NotificationBundle\Channel;
 
 use HadesArchitect\NotificationBundle\Notification\NotificationInterface;
 
-class IteratingChannel implements NotificationChannelInterface, SenderAwareChannelInterface
+class IteratingChannel implements NotificationChannelInterface
 {
-    /**
-     * @var string
-     */
-    protected $sender;
 
     /**
-     * @var NotificationChannelInterface
+     * @var array<NotificationChannelInterface>
      */
-    protected $channelInterface;
+    private $channels;
 
-
-    public function __construct(array $channelInterface)
+    /**
+     * @param array $channels
+     */
+    public function __construct(array $channels)
     {
-        $this->$channelInterface = $channelInterface;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setSender($sender)
-    {
-        $this->sender = $sender;
+        $this->channels = channels;
     }
 
     /**
@@ -44,12 +34,12 @@ class IteratingChannel implements NotificationChannelInterface, SenderAwareChann
      */
     public function send(NotificationInterface $notification)
     {
-        $message = $this->mailer->createMessage()
-            ->setFrom($this->sender)
-            ->setTo($notification->getReceiver())
-            ->setSubject($notification->getSubject())
-            ->setBody($notification->getBody(), 'text/html');
-
-        $this->mailer->send($message);
+        foreach ($this->channels as $channel) {
+            if ($channel->supports($notification)) {
+                $channel->send($notification);
+                return true;
+            }
+        }
+        return false;
     }
 }

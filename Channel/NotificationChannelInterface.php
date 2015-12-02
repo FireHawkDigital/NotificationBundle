@@ -18,7 +18,7 @@ interface NotificationChannelInterface
     /**
      * @param NotificationInterface $notification
      */
-    function send(NotificationInterface $notification);
+    function send(NotificationInterface $notification, $event = null);
 
     /**
      * @param NotificationInterface $notification

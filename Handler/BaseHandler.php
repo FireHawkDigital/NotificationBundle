@@ -40,12 +40,15 @@ class BaseHandler implements HandlerInterface
     /**
      * @var array
      */
+    /**
+     * @param $repo
+     */
     protected $receiver;
 
     /**
      * @inheritdoc
      */
-    function setTemplatingEngine(EngineInterface $engine)
+    public function setTemplatingEngine(EngineInterface $engine)
     {
         $this->templatingEngine = $engine;
     }
@@ -53,12 +56,13 @@ class BaseHandler implements HandlerInterface
     /**
      * @inheritdoc
      */
-    function setChannel(NotificationChannelInterface $channel)
+    public function setChannel(NotificationChannelInterface $channel)
     {
         $this->channel = $channel;
     }
 
-    function setNotificationRepository($repo) {
+    public function setNotificationRepository($repo)
+    {
         $this->setReceiver($repo);
     }
 
@@ -95,19 +99,18 @@ class BaseHandler implements HandlerInterface
             throw new ChannelException('Handler is not ready, channel not set');
         }
 
-
         foreach ($this->receiver->findByEventName($eventName) as $notification) {
             $user = $notification->getCreatedBy();
             $view = $this->templatingEngine->render(
-                $this->templateName, array(
+                $this->templateName, [
                     'event_name' => $eventName,
-                    'event' => $event,
-                    'receiver' => $user
-                )
+                    'event'      => $event,
+                    'receiver'   => $user
+                ]
             );
 
             try {
-                $this->channel->send($this->getNotification($user->getEmail(), $view));
+                $this->channel->send($this->getNotification($user->getEmail(), $view), $event);
             } catch (\Exception $exception) {
                 throw new ChannelException('Exception was caught during notification sending', 0, $exception);
             }
@@ -115,8 +118,7 @@ class BaseHandler implements HandlerInterface
     }
 
     /**
-     * @param string $body
-     *
+     * @param  string                  $body
      * @return NotificationInterface
      */
     protected function getNotification($to, $body)
